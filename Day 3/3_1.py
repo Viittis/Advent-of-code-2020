@@ -1,51 +1,45 @@
 # https://adventofcode.com/2020/day/3
 import numpy as np
-import pandas as pd
-
 
 # External data file
-#data_in = 'data.txt'
-data_in = 'sample.txt'
+data_in = 'data.txt'
 
 
 # Read every line from a txt file into a numpy array
 def load_data(file_in):
-    df = pd.read_csv(data_in, sep="", header=None)
+    data = []
+    with open(file_in) as curfile:
+        for line in curfile.readlines():
+            data.append([x for x in line.rstrip()])
 
-    return df
+    return np.array(data)
 
 
-# xx
-def check_for_trees(row, idx):
-    if row[idx] == '#':  # If we encounter a tree
-        print(row, idx)
-        return 1
-    else:
-        print(row, idx)
-        return 0
+# Get char at pos
+def get_char_at(arr, row, column):
+    column = column % len(arr[0])
+    print(f' row={row}, col={column}, char={arr[row][column]}')
+    return arr[row][column]
 
 
 # Main
 def main():
+    arr = load_data(data_in)
 
-    arr_data = load_data(data_in)
-    print(arr_data)
-    exit()
-
+    path = []
     pos_x = 0
-    trees_hit = 0
 
-    for row in row_data:
-        last_pos = len(row)-1
-        steps_left = last_pos-pos_x
-        if steps_left >= 3:
-            pos_x += 3
-            trees_hit += check_for_trees(row, pos_x)
-        else:
-            pos_x = 3 + steps_left
-            trees_hit += check_for_trees(row, pos_x)
+    for idx, row in enumerate(arr):
+        pos_x += 3
+        pos_y = idx+1
+
+        if pos_y < len(arr):
+            path.append(get_char_at(arr, pos_y, pos_x))
+
+    trees_hit = len([x for x in path if x == '#'])
 
     print(f'Number of trees encountered {trees_hit}')
+
 
 if __name__ == '__main__':
     main()
