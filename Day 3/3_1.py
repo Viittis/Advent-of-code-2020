@@ -18,7 +18,6 @@ def load_data(file_in):
 # Get char at pos
 def get_char_at(arr, row, column):
     column = column % len(arr[0])
-    print(f' row={row}, col={column}, char={arr[row][column]}')
     return arr[row][column]
 
 
@@ -28,10 +27,11 @@ def main():
 
     path = []
     pos_x = 0
+    pos_y = 0
 
-    for idx, row in enumerate(arr):
+    for step in arr:
         pos_x += 3
-        pos_y = idx+1
+        pos_y += 1
 
         if pos_y < len(arr):
             path.append(get_char_at(arr, pos_y, pos_x))
