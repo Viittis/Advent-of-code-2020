@@ -2,8 +2,7 @@
 import numpy as np
 
 # External data file
-#data_in = 'data.txt'
-data_in = 'sample.txt'
+data_in = 'data.txt'
 
 
 # Read every line from a txt file into a numpy array
@@ -32,26 +31,23 @@ def main():
 
     # Iterate slopes
     for slope in slopes:
-        path = []
+        trees_hit = 0
         pos_x = 0
         pos_y = 0
-        for step in arr:
+        # Iterate arr
+        for i in range(0, len(arr)-slope[1], slope[1]):
             pos_x += slope[0]
             pos_y += slope[1]
 
-            if slope[1] == 2:
-                print("x",pos_x,"y",pos_y,"char",get_char_at(arr, pos_y, pos_x))
-
-            # fixme
-            if pos_y < len(arr):
-                path.append(get_char_at(arr, pos_y, pos_x))
-
-            trees_hit = len([x for x in path if x == '#'])
+            map_point = get_char_at(arr, pos_y, pos_x)
+            if map_point == '#':
+                trees_hit += 1
 
         total_trees_hit.append(trees_hit)
         print(trees_hit)
 
-    print(f'All trees hit multiplied together {np.prod(total_trees_hit)}')
+    print(f'Each slope trees hit multiplied together {np.prod(total_trees_hit, dtype=np.int64)}')
+
 
 if __name__ == '__main__':
     main()
