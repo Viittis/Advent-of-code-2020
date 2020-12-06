@@ -12,15 +12,17 @@ optional_fields = ['cid']
 # Read every line from a txt file into a list of strings
 def load_data(file_in):
     data = []
+
     with open(file_in) as curfile:
         single_item = ''
         for line in curfile.readlines():
             if line.rstrip() != '':
-                single_item += line.rstrip()
+                single_item += line.rstrip() + ' '
             else:
-                data.append(single_item)
+                data.append(single_item.rstrip())
                 single_item = ''
-        data.append(single_item)
+        data.append(single_item.strip())
+
     return data
 
 
@@ -44,7 +46,7 @@ def passports_to_dict(passports_in):
 # Check if all dict keys can be found in mandatory fields
 def validate_pp(pp):
     key_list = list(pp.keys())
-    validation = all(item in mandatory_fields for item in key_list)
+    validation = all(item in key_list for item in mandatory_fields)
 
     return validation
 
@@ -63,7 +65,7 @@ def main():
         if validated is True:
             valid_count += 1
 
-    print(f'The batch file contained {valid_count} valid passport data.')
+    print(f'The batch file contained {valid_count} valid passports.')
 
 
 if __name__ == '__main__':
