@@ -1,7 +1,7 @@
 # https://adventofcode.com/2020/day/7
 
 # External data file
-data_in = 'data.txt'
+data_in = 'sample.txt'
 
 
 # Read every line from a txt file into a list
@@ -27,22 +27,24 @@ def parse_rules(list_in):
 # Loop the rules until no new matches found
 def loop_rules(rules, keyword):
     keywords = [keyword]
+    total_bags = 0
     while True:
         found_new = False
         for key, value in rules.items():
-            # Remove 2 first chars from all strings to make comparing easier
-            value = [x[2:] for x in value]
+            # Split value into tuples
+            value = [(x[0], x[2:]) for x in value]
 
             # If there is a match, save the key and start a new search
-            if bool(set(keywords).intersection(value)) and key not in keywords:
-                keywords.append(key)
-                found_new = True
+            if bool(set(keywords).intersection(value)):
+                if key not in keywords:
+                    keywords.append(key)
+                    found_new = True
         # No new matches found, break and return results
         if not found_new:
             keywords.remove(keyword)
             break
 
-    return keywords
+    return total_bags
 
 
 # Main
@@ -53,11 +55,11 @@ def main():
     # Parse data, return dict
     rules = parse_rules(raw_data)
 
-    # How many bags can contain at least one shiny gold bag?
+    # How many individual bags does one shiny gold bag contain?
     keyword = 'shiny gold'
     result = loop_rules(rules, keyword)
 
-    print(f'{len(result)} bags can contain at least one {keyword} bag.')
+    print(f'A {keyword} bag contains {result} individual bags.')
 
 
 if __name__ == '__main__':
