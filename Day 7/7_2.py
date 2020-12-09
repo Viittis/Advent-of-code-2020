@@ -24,27 +24,60 @@ def parse_rules(list_in):
     return dict_out
 
 
-# Loop the rules until no new matches found
+# Parse a single bag to tuple (int count, str bag name)
+def parse_bag(bag_in):
+    # Bag count
+    try:
+        count = int(bag_in[0])
+    except:
+        count = 0  # set to 0 if it's not a number
+
+    # Bag name
+    bag = bag_in[1]
+
+    bag_out = (count, bag)
+
+    return bag_out
+
+
+# Loop a single layer
+def loop_layer(rules, bag_list):
+    found_bags = []
+
+    for bag, children in rules.items():
+        # If the current bag is found in the bag_list we need to save necessary details
+        if bag in bag_list:
+            # Str list of children to list of tuples
+            child_bags = [(child[0], child[2:]) for child in children]
+
+            for child in child_bags:
+                found_bags.append(parse_bag(child))
+
+    return found_bags
+
+
+# Loop all the layers until we reach max depth
 def loop_rules(rules, keyword):
     keywords = [keyword]
-    total_bags = 0
+    all_child_bags = []
+
     while True:
-        found_new = False
-        for key, value in rules.items():
-            # Split value into tuples
-            value = [(x[0], x[2:]) for x in value]
+        layer_bags = []
+        for keyword in keywords:
+            findings = loop_layer(rules, keywords)
 
-            # If there is a match, save the key and start a new search
-            if bool(set(keywords).intersection(value)):
-                if key not in keywords:
-                    keywords.append(key)
-                    found_new = True
-        # No new matches found, break and return results
-        if not found_new:
-            keywords.remove(keyword)
+            if findings:
+                layer_bags.append([keyword, findings])
+
+        # We reached max depth
+        if not layer_bags:
             break
+        else:
+            print(layer_bags)
 
-    return total_bags
+        keywords = [x[1][1][1] for x in layer_bags]
+
+    return 0
 
 
 # Main
@@ -59,7 +92,9 @@ def main():
     keyword = 'shiny gold'
     result = loop_rules(rules, keyword)
 
-    print(f'A {keyword} bag contains {result} individual bags.')
+    print(result)
+
+    #print(f'A {keyword} bag contains {result} individual bags.')
 
 
 if __name__ == '__main__':
